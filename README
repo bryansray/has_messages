@@ -1,0 +1,102 @@
+= has_messages
+
++has_messages+ demonstrates a reference implementation for sending messages between users.
+
+== Resources
+
+Wiki
+
+* http://wiki.pluginaweek.org/Has_messages
+
+API
+
+* http://api.pluginaweek.org/has_messages
+
+Development
+
+* http://dev.pluginaweek.org/browser/trunk/has_messages
+
+Source
+
+* http://svn.pluginaweek.org/trunk/has_messages
+
+== Description
+
+Messaging between users is fairly common in web applications, especially those
+that support social networking.  Messaging doesn't necessarily need to be
+between users, but can also act as a way for the web application to send notices
+and other notifications to users.
+
+Designing and building a framework that supports this can be complex and takes
+away from the business focus.  This plugin can help ease that process by demonstrating
+a complete implementation of these features.
+
+== Usage
+
+=== Adding message support
+
+  class User < ActiveRecord::Base
+    has_messages
+  end
+
+This will build the following associations:
+* +messages+
+* +unsent_messages+
+* +sent_messages+
+* +received_messages+
+
+If you have more specified needs, you can create the same associations manually
+that +has_messages+ builds.  See PluginAWeek::HasMessages::MacroMethods#has_messages
+for more information about the asssociations that are generated from this macro.
+
+=== Creating new messages
+
+  message = user.messages.build
+  message.to user1, user2
+  message.subject = 'Hey!'
+  message.body = 'Does anyone want to go out tonight?'
+  message.deliver!
+
+=== Replying to messages
+
+  reply = message.reply_to_all
+  reply.body = "I'd love to go out!"
+  reply.deliver!
+
+=== Forwarding messages
+
+  forward = message.forward
+  forward.body = 'Interested?'
+  forward.deliver!
+
+=== Processing messages asynchronously
+
+In addition to delivering messages immediately, you can also *queue* messages so
+that an external application processes and delivers them.  This is especially
+useful for messages that need to be sent outside of the confines of the application.
+
+To queue messages for external processing, you can use the <tt>queue!</tt> event,
+rather than <tt>deliver!</tt>.  This will indicate to any external processes that
+the message is ready to be sent.
+
+To process queued emails, you need an external cron job that checks and sends
+them like so:
+
+  Message.with_state('queued').each do |message|
+    message.deliver!
+  end
+
+== Testing
+
+Before you can run any tests, the following gem must be installed:
+* plugin_test_helper[http://wiki.pluginaweek.org/Plugin_test_helper]
+
+To run against a specific version of Rails:
+
+  rake test RAILS_FRAMEWORK_ROOT=/path/to/rails
+
+== Dependencies
+
+* Rails 2.1 or later
+* plugins_plus[http://wiki.pluginaweek.org/Plugins_plus]
+* state_machine[http://wiki.pluginaweek.org/State_machine]
