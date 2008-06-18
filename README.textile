@@ -1,8 +1,12 @@
-= has_messages
+h3. Information
 
-+has_messages+ demonstrates a reference implementation for sending messages between users.
+This is a 'fork' of the code base from http://svn.pluginaweek.org/trunk/has_messages. I've replaced the state_machine plugin with acts_as_state_machine and plugins_plus with engines. Eventually I'll get around to removing the engines dependency at all, because I don't think it is necessary, but for now this will work.
 
-== Resources
+h3. has_messages
+
+has_messages demonstrates a reference implementation for sending messages between users.
+
+h3. Resources
 
 Wiki
 
@@ -20,7 +24,7 @@ Source
 
 * http://svn.pluginaweek.org/trunk/has_messages
 
-== Description
+h3. Description
 
 Messaging between users is fairly common in web applications, especially those
 that support social networking.  Messaging doesn't necessarily need to be
@@ -31,25 +35,25 @@ Designing and building a framework that supports this can be complex and takes
 away from the business focus.  This plugin can help ease that process by demonstrating
 a complete implementation of these features.
 
-== Usage
+h3. Usage
 
-=== Adding message support
+h4. Adding message support
 
   class User < ActiveRecord::Base
     has_messages
   end
 
 This will build the following associations:
-* +messages+
-* +unsent_messages+
-* +sent_messages+
-* +received_messages+
+* messages
+* unsent_messages
+* sent_messages
+* received_messages
 
 If you have more specified needs, you can create the same associations manually
-that +has_messages+ builds.  See PluginAWeek::HasMessages::MacroMethods#has_messages
+that has_messages builds.  See PluginAWeek::HasMessages::MacroMethods#has_messages
 for more information about the asssociations that are generated from this macro.
 
-=== Creating new messages
+h4. Creating new messages
 
   message = user.messages.build
   message.to user1, user2
@@ -57,19 +61,19 @@ for more information about the asssociations that are generated from this macro.
   message.body = 'Does anyone want to go out tonight?'
   message.deliver!
 
-=== Replying to messages
+h4. Replying to messages
 
   reply = message.reply_to_all
   reply.body = "I'd love to go out!"
   reply.deliver!
 
-=== Forwarding messages
+h4. Forwarding messages
 
   forward = message.forward
   forward.body = 'Interested?'
   forward.deliver!
 
-=== Processing messages asynchronously
+h4. Processing messages asynchronously
 
 In addition to delivering messages immediately, you can also *queue* messages so
 that an external application processes and delivers them.  This is especially
@@ -86,7 +90,7 @@ them like so:
     message.deliver!
   end
 
-== Testing
+h3. Testing
 
 Before you can run any tests, the following gem must be installed:
 * plugin_test_helper[http://wiki.pluginaweek.org/Plugin_test_helper]
@@ -95,8 +99,8 @@ To run against a specific version of Rails:
 
   rake test RAILS_FRAMEWORK_ROOT=/path/to/rails
 
-== Dependencies
+h3. Dependencies
 
 * Rails 2.1 or later
-* plugins_plus[http://wiki.pluginaweek.org/Plugins_plus]
-* state_machine[http://wiki.pluginaweek.org/State_machine]
+* "engines":http://github.com/lazyatom/engines/tree/master
+* "acts_as_state_machine":http://github.com/omghax/acts_as_state_machine/tree/master
