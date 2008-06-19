@@ -22,19 +22,17 @@
 # * +hide!+ -Hides the message from the sender's inbox
 # * +unhide!+ - Makes the message visible again
 class Message < ActiveRecord::Base
-  belongs_to  :sender,
-                :polymorphic => true
+  belongs_to  :sender, :polymorphic => true
   has_many    :recipients,
                 :class_name => 'MessageRecipient',
                 :order => 'kind DESC, position ASC',
                 :dependent => :destroy
   
-  validates_presence_of :sender_id,
-                        :sender_type
+  validates_presence_of :sender_id, :sender_type
   
   after_save :update_recipients
   
-  named_scope :visible, :conditions => {:hidden_at => nil}
+  named_scope :visible, :conditions => { :hidden_at => nil }
   
   acts_as_state_machine :initial => :unsent
   
